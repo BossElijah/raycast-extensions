@@ -2,9 +2,12 @@
   "$schema": "https://www.raycast.com/schemas/extension.json",
   "name": "drupal-org",
   "title": "Drupal.org",
-  "description": "Get change records from drupal.org",
+  "description": "Get information from drupal.org",
   "icon": "drop-icon.png",
   "author": "hussainweb",
+  "contributors": [
+    "BossElijah"
+  ],
   "categories": [
     "Developer Tools",
     "Documentation"
@@ -16,6 +19,13 @@
       "title": "Search Change Records",
       "subtitle": "Drupal",
       "description": "Search for changes in Drupal versions pulled from change records",
+      "mode": "view"
+    },
+    {
+      "name": "search-api",
+      "title": "Search Drupal API",
+      "subtitle": "Drupal",
+      "description": "Search Drupal API documentation",
       "mode": "view"
     }
   ],
