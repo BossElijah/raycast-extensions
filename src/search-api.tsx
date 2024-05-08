@@ -100,6 +100,6 @@ const SearchApi = () => {
       })}
     </List>
   );
-}
+};
 
 export default SearchApi;
