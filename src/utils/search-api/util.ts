@@ -29,7 +29,7 @@ export const drupalVersions: { name: DrupalVersions; code: DrupalVersionMachineC
 export const getDrupalApiResults = async (drupalVersion: DrupalVersionMachineCode, searchQuery: string) => {
   const searchUrl = `https://api.drupal.org/api/drupal/${drupalVersion}/search`;
   const { body } = await got(`${searchUrl}/${searchQuery}`, {
-    headers: { "user-agent": "Raycast Drupal API Extension" },
+    headers: { "user-agent": "Raycast Drupal.org Extension" },
   });
   const $ = cheerioLoad(body);
   const tableRows = $(".views-element-container tbody tr");

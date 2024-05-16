@@ -1,37 +1,53 @@
 import got from "got";
-import { load as cheerioLoad } from "cheerio";
+import { CheerioAPI, load as cheerioLoad } from "cheerio";
 import { Project } from "./types";
 
-export const getProjectResults = async (searchQuery: string) => {
-  const searchUrl = `https://www.drupal.org/search/site/${searchQuery}`;
-  const { body } = await got(searchUrl, {
-    headers: { "user-agent": "Raycast Drupal API Extension" },
-  });
-  const $ = cheerioLoad(body);
-  const projectRows = $("ol.search-results li.search-result");
-
-  const filteredByProject = projectRows.toArray().filter((item) => {
-    const type = $(".search-info", item).text().trim();
-    return type.includes("project") || type === "Group";
-  });
-
-  const projects: Project[] = filteredByProject.map((item) => {
-    const projectLink = $("h3.title", item);
-    const projectUrl = $("a", projectLink).attr("href");
-    if (!projectUrl) {
+const getRecords = ($cheerioItems: CheerioAPI): Project[] => {
+  const rows = $cheerioItems("ol.search-results li.search-result");
+  return rows.toArray().map((item) => {
+    const moduleLink = $cheerioItems("h3.title", item);
+    const moduleUrl = $cheerioItems("a", moduleLink).attr("href");
+    if (!moduleUrl) {
       return {} as Project;
     }
-    const createdBy = $(".username", item).text().trim();
+    const createdBy = $cheerioItems(".username", item).text().trim();
     const record: Project = {
-      title: $("h3.title", item).text().trim(),
+      title: $cheerioItems("h3.title", item).text().trim(),
       createdBy,
-      description: $(".search-snippet", item).text().trim(),
-      type: $(".search-info", item).text().trim().replace(" project", ""),
-      url: projectUrl,
+      description: $cheerioItems(".search-snippet", item).text().trim(),
+      type: $cheerioItems(".search-info", item).text().trim().replace(" project", ""),
+      url: moduleUrl,
     };
 
     return record;
   });
+};
 
-  return projects;
+const fetchApi = async (query: string, type: string) => {
+  const searchUrl = `https://www.drupal.org/search/site/${query}?f%5B0%5D=ss_meta_type%3A${type}`;
+  const { body } = await got(searchUrl, {
+    headers: { "user-agent": "Raycast Drupal.org Extension" },
+  });
+  return body;
+};
+
+export const getProjectResults = async (searchQuery: string, type: string) => {
+  const moduleData = await fetchApi(searchQuery, "module");
+  const themeData = await fetchApi(searchQuery, "theme");
+  const distributionData = await fetchApi(searchQuery, "distribution");
+
+  switch (type) {
+    case "modules":
+      return getRecords(cheerioLoad(moduleData));
+    case "themes":
+      return getRecords(cheerioLoad(themeData));
+    case "distributions":
+      return getRecords(cheerioLoad(distributionData));
+    default:
+      return [
+        ...getRecords(cheerioLoad(moduleData)),
+        ...getRecords(cheerioLoad(themeData)),
+        ...getRecords(cheerioLoad(distributionData)),
+      ];
+  }
 };

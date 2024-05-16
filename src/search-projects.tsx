@@ -7,12 +7,13 @@ import { CommandState } from "./utils/general/types";
 const SearchProjects = () => {
   const [state, setState] = useState<CommandState<Project[]>>({});
   const [searchText, setSearchText] = useState<string>("");
+  const [type, setType] = useState<string>("");
 
   useEffect(() => {
     const fetchRecords = async () => {
       try {
         setState({ records: state.records, loading: true });
-        const feed = await getProjectResults(searchText);
+        const feed = await getProjectResults(searchText, type);
         setState({ records: feed, loading: false });
       } catch (error) {
         console.error(error);
@@ -23,7 +24,22 @@ const SearchProjects = () => {
     };
 
     fetchRecords();
-  }, [searchText]);
+  }, [searchText, type]);
+
+  const typeFilter = (
+    <List.Dropdown
+      tooltip="Filter by Type"
+      onChange={(newValue) => {
+        setType(newValue);
+      }}
+      defaultValue=""
+    >
+      <List.Dropdown.Item key="all" title="– Show all –" value="" />
+      <List.Dropdown.Item key="modules" title="Modules" value="modules" />
+      <List.Dropdown.Item key="themes" title="Themes" value="themes" />
+      <List.Dropdown.Item key="distributions" title="Distributions" value="distributions" />
+    </List.Dropdown>
+  );
 
   let noResultsText = "No results...";
   let noResultsIcon: Icon | null = Icon.Important;
@@ -51,6 +67,7 @@ const SearchProjects = () => {
       searchBarPlaceholder="Search for Drupal projects..."
       isShowingDetail
       filtering={false}
+      searchBarAccessory={typeFilter}
     >
       <List.EmptyView title={noResultsText} icon={noResultsIcon} />
       {state.records?.map((item, index) => {
