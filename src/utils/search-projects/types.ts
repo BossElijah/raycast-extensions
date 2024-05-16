@@ -5,9 +5,3 @@ export interface Project {
   url: string;
   createdBy: string;
 }
-
-export interface ApiState {
-  records?: Project[];
-  error?: Error;
-  loading?: boolean;
-}

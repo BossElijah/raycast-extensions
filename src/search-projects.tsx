@@ -1,10 +1,11 @@
 import { Action, ActionPanel, Icon, List } from "@raycast/api";
 import { useEffect, useState } from "react";
 import { getProjectResults } from "./utils/search-projects/util";
-import { ApiState } from "./utils/search-projects/types";
+import { Project } from "./utils/search-projects/types";
+import { CommandState } from "./utils/general/types";
 
 const SearchProjects = () => {
-  const [state, setState] = useState<ApiState>({});
+  const [state, setState] = useState<CommandState<Project[]>>({});
   const [searchText, setSearchText] = useState<string>("");
 
   useEffect(() => {
@@ -40,13 +41,6 @@ const SearchProjects = () => {
       noResultsText = "Searching...";
     }
   }
-
-  // title: string;
-  // type: string;
-  // description: string;
-  // url: string;
-  // createdBy: string;
-  // createdByUrl: string;
 
   return (
     <List

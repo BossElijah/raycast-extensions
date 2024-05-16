@@ -1,6 +1,7 @@
 import got from "got";
 import { load as cheerioLoad } from "cheerio";
-import { DrupalVersionMachineCode, DrupalVersions, ApiItem } from "./types";
+import { ApiItem } from "./types";
+import { DrupalVersionMachineCode, DrupalVersions } from "../general/types";
 
 export const drupalVersions: { name: DrupalVersions; code: DrupalVersionMachineCode }[] = [
   {
