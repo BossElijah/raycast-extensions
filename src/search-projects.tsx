@@ -84,9 +84,9 @@ const SearchProjects = () => {
                 <Action.OpenInBrowser url={item.url} />
                 <Action.CopyToClipboard title="Copy URL to Clipboard" content={item.url} />
                 <Action.CopyToClipboard
-                  title="Copy Title to Clipboard"
+                  title="Copy Name to Clipboard"
                   content={item.title}
-                  shortcut={{ modifiers: ["opt", "cmd"], key: "t" }}
+                  shortcut={{ modifiers: ["opt", "cmd"], key: "c" }}
                 />
               </ActionPanel>
             }
